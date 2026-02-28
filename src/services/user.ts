@@ -36,6 +36,10 @@ class UserService {
         });
     };
 
+    public static getUserById(id: string) {
+        return prismaClient.user.findUnique({ where: { id }});
+    };
+
     private static getUserByEmail(email: string) {
         return prismaClient.user.findUnique({ where: { email }});
     };
@@ -53,6 +57,10 @@ class UserService {
         // generate token
         const token = JWT.sign({ id: user.id, email: user.email}, secret);
         return token;
+    };
+
+    public static decodeJWToken(token: string) {
+        return JWT.verify(token, secret);
     };
 };
 

@@ -3,6 +3,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
 import { prismaClient } from './lib/db';
 import { createApolloServer } from './graphql/index';
+import UserService from './services/user';
 
 async function init() {  
     const app = express();
@@ -17,7 +18,17 @@ async function init() {
         '/graphql',
         cors(),
         express.json(),
-        expressMiddleware(gqlServer),
+        expressMiddleware(gqlServer, {
+            context: async({ req }) => {
+                const token = req.headers['token'];
+                try {
+                    const user = UserService.decodeJWToken(token as string);
+                    return { user };
+                } catch(error) {
+                    return {};
+                }
+            },
+        }),
     );
 
     app.listen(PORT, '0.0.0.0', () => console.log(`Server Running at PORT:${PORT}`));
