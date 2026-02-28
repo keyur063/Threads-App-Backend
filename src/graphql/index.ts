@@ -4,25 +4,25 @@ import { User } from './user';
 
 export async function createApolloServer() {
     const gqlServer = new ApolloServer({
-            typeDefs: `
-                type Query {
-                    hello: String
-                }
-                type Mutation {
-                    ${User.mutations}
-                }
-            `,
-            resolvers: {
-                Query: {
-                    ...User.resolvers.queries,
-                },
-                Mutation: {
-                    ...User.resolvers.mutations,
-                },
+        typeDefs: `
+            type Query {
+                ${User.queries}
+            }
+            type Mutation {
+                ${User.mutations}
+            }
+        `,
+        resolvers: {
+            Query: {
+                ...User.resolvers.queries,
             },
-            plugins: [ ApolloServerPluginLandingPageLocalDefault() ],
-        });
+            Mutation: {
+                ...User.resolvers.mutations,
+            },
+        },
+        plugins: [ ApolloServerPluginLandingPageLocalDefault() ],
+    });
 
-        await gqlServer.start();
-        return gqlServer;
+    await gqlServer.start();
+    return gqlServer;
 };
